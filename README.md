@@ -1,26 +1,98 @@
-# TON
+# TON NFT Collection
 
-## Project structure
+A TON blockchain NFT Collection smart contract built with Blueprint.
 
--   `contracts` - source code of all the smart contracts of the project and their dependencies.
--   `wrappers` - wrapper classes (implementing `Contract` from ton-core) for the contracts, including any [de]serialization primitives and compilation functions.
--   `tests` - tests for the contracts.
--   `scripts` - scripts used by the project, mainly the deployment scripts.
+## Prerequisites
 
-## How to use
+- **Node.js v20+** (Required for Blueprint to work correctly)
+  - Check version: `node --version`
+  - Switch to Node 20: `nvm use 20.19.4` (if using nvm)
+- **Testnet TON tokens** for deployment
 
-### Build
+## Project Structure
 
-`npx blueprint build` or `yarn blueprint build`
+-   `contracts/` - FunC smart contracts (NFT Collection & NFT Item)
+-   `wrappers/` - TypeScript wrapper classes for contract interaction
+-   `tests/` - Contract tests
+-   `scripts/` - Deployment scripts
 
-### Test
+## Setup
 
-`npx blueprint test` or `yarn blueprint test`
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-### Deploy or run another script
+2. **Switch to Node 20+ (Important!):**
+   ```bash
+   nvm use 20.19.4
+   ```
 
-`npx blueprint run` or `yarn blueprint run`
+## Usage
 
-### Add a new contract
+### Build Contracts
 
-`npx blueprint create ContractName` or `yarn blueprint create ContractName`
+```bash
+npx blueprint build
+```
+
+### Run Tests
+
+```bash
+npx blueprint test
+```
+
+### Deploy to Testnet
+
+1. **Get testnet tokens:**
+   - Open Telegram: [@testgiver_ton_bot](https://t.me/testgiver_ton_bot)
+   - Send your wallet address to receive 5 test TON
+
+2. **Deploy the NFT Collection:**
+   ```bash
+   nvm use 20.19.4
+   npx blueprint run deployTonNFT --testnet
+   ```
+
+3. **Choose your wallet:**
+   - TON Connect (Tonkeeper, MyTonWallet, etc.)
+   - Deep link
+   - Mnemonic (requires `WALLET_MNEMONIC` and `WALLET_VERSION` env vars)
+
+4. **Scan QR code** with your wallet and approve the transaction
+
+### Customize Collection Metadata
+
+Edit `scripts/deployTonNFT.ts` and update the `collectionContent.uri` with your metadata URL:
+
+```typescript
+collectionContent: {
+    uri: 'https://your-domain.com/collection.json',
+}
+```
+
+## Troubleshooting
+
+### "Cannot find module 'deployTonNFT.ts'" Error
+
+**Solution:** You're using Node 18 or lower. Switch to Node 20+:
+```bash
+nvm use 20.19.4
+```
+
+### "TON wallet empty" Error
+
+**Solution:** Get testnet tokens from [@testgiver_ton_bot](https://t.me/testgiver_ton_bot)
+
+## Contract Features
+
+- ✅ NFT Collection deployment
+- ✅ NFT minting functionality
+- ✅ Royalty support (5% default)
+- ✅ Testnet ready
+
+## Resources
+
+- [TON Documentation](https://docs.ton.org/)
+- [Blueprint Documentation](https://github.com/ton-org/blueprint)
+- [TON NFT Standard](https://github.com/ton-blockchain/TEPs/blob/master/text/0062-nft-standard.md)
