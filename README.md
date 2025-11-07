@@ -32,15 +32,41 @@ A TON blockchain NFT Collection smart contract built with Blueprint.
 
 ### Build Contracts
 
+Compile the FunC smart contracts:
+
 ```bash
-npx blueprint build
+nvm use 20.19.4
+npx blueprint build --all
+```
+
+This will:
+- Compile `NFTCollection` contract
+- Compile `NFTItem` contract
+- Generate artifacts in `build/` directory
+
+**Build individual contracts:**
+```bash
+npx blueprint build NFTCollection
+# or
+npx blueprint build NFTItem
 ```
 
 ### Run Tests
 
+Execute the test suite to verify contract functionality:
+
 ```bash
+nvm use 20.19.4
 npx blueprint test
 ```
+
+**Expected output:**
+- ✅ NFTCollection deployment test
+- ✅ Get collection data test
+- ✅ Mint NFT item test
+- ✅ Verify uninitialized NFT test
+
+All tests should pass before deployment.
 
 ### Deploy to Testnet
 
@@ -91,8 +117,51 @@ nvm use 20.19.4
 - ✅ Royalty support (5% default)
 - ✅ Testnet ready
 
+## Complete Workflow
+
+### 1. Initial Setup
+```bash
+# Clone the repository
+git clone https://github.com/ghoshvidip26/TON-NFT.git
+cd TON-NFT
+
+# Install dependencies
+npm install
+
+# Switch to Node 20
+nvm use 20.19.4
+```
+
+### 2. Build & Test
+```bash
+# Build all contracts
+npx blueprint build --all
+
+# Run tests
+npx blueprint test
+```
+
+### 3. Deploy to Testnet
+```bash
+# Get testnet tokens from @testgiver_ton_bot on Telegram
+
+# Deploy NFT Collection
+npx blueprint run deployTonNFT --testnet
+
+# Choose wallet (TON Connect/Deep link/Mnemonic)
+# Scan QR code and approve transaction
+```
+
+### 4. After Deployment
+Once deployed, you can:
+- Mint NFTs using the collection contract
+- Transfer NFT ownership
+- Query NFT data
+- Set royalty parameters
+
 ## Resources
 
 - [TON Documentation](https://docs.ton.org/)
 - [Blueprint Documentation](https://github.com/ton-org/blueprint)
 - [TON NFT Standard](https://github.com/ton-blockchain/TEPs/blob/master/text/0062-nft-standard.md)
+- [Testnet Faucet](https://t.me/testgiver_ton_bot)
