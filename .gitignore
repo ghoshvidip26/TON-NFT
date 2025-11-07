@@ -5,10 +5,17 @@ dist
 .DS_Store
 package.ts
 
+# Compiled JavaScript files
+*.js
+!jest.config.js
+
 # VS Code
 .vscode/*
 .history/
 *.vsix
+
+# Environment
+.env
 
 # IDEA files
 .idea
