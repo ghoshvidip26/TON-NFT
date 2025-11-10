@@ -1,167 +1,164 @@
-# TON NFT Collection
+# TON NFT Collection API
 
-A TON blockchain NFT Collection smart contract built with Blueprint.
+Complete NFT minting system with collection deployment. NFTs will appear in Tonkeeper, Tonhub, and all TON wallets.
 
-## Prerequisites
+## Features
 
-- **Node.js v20+** (Required for Blueprint to work correctly)
-  - Check version: `node --version`
-  - Switch to Node 20: `nvm use 20.19.4` (if using nvm)
-- **Testnet TON tokens** for deployment
+- ✅ Deploy NFT collection contracts
+- ✅ Mint NFTs from collection
+- ✅ NFTs appear in wallets
+- ✅ IPFS metadata storage
+- ✅ TON standard compliant (TEP-62)
+- ✅ Marketplace compatible
 
-## Project Structure
+## Quick Start
 
--   `contracts/` - FunC smart contracts (NFT Collection & NFT Item)
--   `wrappers/` - TypeScript wrapper classes for contract interaction
--   `tests/` - Contract tests
--   `scripts/` - Deployment scripts
-
-## Setup
-
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-2. **Switch to Node 20+ (Important!):**
-   ```bash
-   nvm use 20.19.4
-   ```
-
-## Usage
-
-### Build Contracts
-
-Compile the FunC smart contracts:
+### 1. Setup
 
 ```bash
-nvm use 20.19.4
-npx blueprint build --all
+npm install
 ```
 
-This will:
-- Compile `NFTCollection` contract
-- Compile `NFTItem` contract
-- Generate artifacts in `build/` directory
-
-**Build individual contracts:**
-```bash
-npx blueprint build NFTCollection
-# or
-npx blueprint build NFTItem
+Add to `.env`:
+```env
+WALLET_MNEMONIC="your 24 word mnemonic"
+PINATA_JWT="your_pinata_jwt_token"
 ```
 
-### Run Tests
+Get Pinata JWT from: https://pinata.cloud
 
-Execute the test suite to verify contract functionality:
+### 2. Start Server
 
 ```bash
-nvm use 20.19.4
-npx blueprint test
+npm start
 ```
 
-**Expected output:**
-- ✅ NFTCollection deployment test
-- ✅ Get collection data test
-- ✅ Mint NFT item test
-- ✅ Verify uninitialized NFT test
+### 3. Deploy & Mint
 
-All tests should pass before deployment.
+Run the automated script:
+```bash
+./quick-start.sh
+```
 
-### Deploy to Testnet
+Or manually:
 
-1. **Get testnet tokens:**
-   - Open Telegram: [@testgiver_ton_bot](https://t.me/testgiver_ton_bot)
-   - Send your wallet address to receive 5 test TON
+**Deploy Collection:**
+```bash
+curl -X POST http://localhost:3000/deploy-collection \
+  -H "Content-Type: application/json" \
+  -d '{
+    "collectionName": "My Collection",
+    "collectionDescription": "NFT Collection",
+    "collectionImage": "https://picsum.photos/800"
+  }'
+```
 
-2. **Deploy the NFT Collection:**
-   ```bash
-   nvm use 20.19.4
-   npx blueprint run deployTonNFT --testnet
-   ```
+Wait 30 seconds, then **Mint NFT:**
+```bash
+curl -X POST http://localhost:3000/mint-nft \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "NFT #1",
+    "description": "My NFT",
+    "image": "https://picsum.photos/500"
+  }'
+```
 
-3. **Choose your wallet:**
-   - TON Connect (Tonkeeper, MyTonWallet, etc.)
-   - Deep link
-   - Mnemonic (requires `WALLET_MNEMONIC` and `WALLET_VERSION` env vars)
+## API Endpoints
 
-4. **Scan QR code** with your wallet and approve the transaction
+### `GET /wallet-info`
+Get wallet balance and address
 
-### Customize Collection Metadata
+### `POST /deploy-collection`
+Deploy NFT collection contract
 
-Edit `scripts/deployTonNFT.ts` and update the `collectionContent.uri` with your metadata URL:
-
-```typescript
-collectionContent: {
-    uri: 'https://your-domain.com/collection.json',
+**Body:**
+```json
+{
+  "collectionName": "string",
+  "collectionDescription": "string",
+  "collectionImage": "string (URL)"
 }
 ```
 
+**Requirements:** ≥ 0.5 TON
+
+### `POST /mint-nft`
+Mint NFT from collection
+
+**Body:**
+```json
+{
+  "name": "string",
+  "description": "string",
+  "image": "string (URL)",
+  "recipientAddress": "string (optional)"
+}
+```
+
+**Requirements:** 
+- Collection deployed
+- ≥ 0.08 TON per NFT
+
+### `GET /collection-info`
+Get collection details and total minted
+
+## View Your NFTs
+
+### Tonkeeper (Recommended)
+1. Download Tonkeeper app
+2. Import wallet with mnemonic
+3. Settings → Network → **Testnet**
+4. Collectibles tab → Your NFTs appear! 🎨
+
+### TON Explorer
+Visit the NFT address from mint response:
+```
+https://testnet.tonscan.org/address/YOUR_NFT_ADDRESS
+```
+
+## Costs
+
+**Testnet (Free):**
+- Collection: ~0.5 TON
+- Per NFT: ~0.05 TON
+
+Get testnet TON: https://t.me/testgiver_ton_bot
+
+**Mainnet:**
+- Collection: ~0.5 TON (~$2-3)
+- Per NFT: ~0.05 TON (~$0.20-0.30)
+
+## Project Structure
+
+- `contracts/` - NFT collection and item contracts (FunC)
+- `wrappers/` - TypeScript wrappers for contracts
+- `index.ts` - API server with endpoints
+- `quick-start.sh` - Automated deployment script
+- `example-requests.http` - API examples
+
 ## Troubleshooting
 
-### "Cannot find module 'deployTonNFT.ts'" Error
+**"Collection not deployed"**
+→ Run `/deploy-collection` first
 
-**Solution:** You're using Node 18 or lower. Switch to Node 20+:
-```bash
-nvm use 20.19.4
-```
+**"Insufficient balance"**
+→ Get testnet TON from bot
 
-### "TON wallet empty" Error
+**"IPFS not configured"**
+→ Add `PINATA_JWT` to `.env`
 
-**Solution:** Get testnet tokens from [@testgiver_ton_bot](https://t.me/testgiver_ton_bot)
-
-## Contract Features
-
-- ✅ NFT Collection deployment
-- ✅ NFT minting functionality
-- ✅ Royalty support (5% default)
-- ✅ Testnet ready
-
-## Complete Workflow
-
-### 1. Initial Setup
-```bash
-# Clone the repository
-git clone https://github.com/ghoshvidip26/TON-NFT.git
-cd TON-NFT
-
-# Install dependencies
-npm install
-
-# Switch to Node 20
-nvm use 20.19.4
-```
-
-### 2. Build & Test
-```bash
-# Build all contracts
-npx blueprint build --all
-
-# Run tests
-npx blueprint test
-```
-
-### 3. Deploy to Testnet
-```bash
-# Get testnet tokens from @testgiver_ton_bot on Telegram
-
-# Deploy NFT Collection
-npx blueprint run deployTonNFT --testnet
-
-# Choose wallet (TON Connect/Deep link/Mnemonic)
-# Scan QR code and approve transaction
-```
-
-### 4. After Deployment
-Once deployed, you can:
-- Mint NFTs using the collection contract
-- Transfer NFT ownership
-- Query NFT data
-- Set royalty parameters
+**NFT not in wallet**
+→ Wait 1-2 minutes
+→ Check Testnet mode is enabled
 
 ## Resources
 
-- [TON Documentation](https://docs.ton.org/)
-- [Blueprint Documentation](https://github.com/ton-org/blueprint)
-- [TON NFT Standard](https://github.com/ton-blockchain/TEPs/blob/master/text/0062-nft-standard.md)
-- [Testnet Faucet](https://t.me/testgiver_ton_bot)
+- **TON Docs:** https://docs.ton.org
+- **NFT Standard:** https://github.com/ton-blockchain/TEPs/blob/master/text/0062-nft-standard.md
+- **Tonkeeper:** https://tonkeeper.com
+- **Pinata:** https://pinata.cloud
+
+## License
+
+MIT
